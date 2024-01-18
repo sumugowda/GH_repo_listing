@@ -1,0 +1,67 @@
+
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 8px;
+    width: 60%;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.loader {
+    border: 8px solid #343434;
+    border-top: 8px solid #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin: 20px auto;
+    animation: spin 1s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.repositories {
+    margin-bottom: 20px;
+}
+
+.repository {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.pagination {
+    text-align: center;
+}
+
+.pagination button {
+    margin: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
