@@ -1,5 +1,18 @@
 const baseURL = "https://api.github.com/users/";
 
+function fetchUserInformation(username) {
+    return fetch(`${baseURL}${username}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            throw new Error(`Error fetching user information: ${error.message}`);
+        });
+}
+
 function fetchRepositories() {
     const username = document.getElementById("usernameInput").value;
     const repositoriesContainer = document.getElementById("repositories");
@@ -10,7 +23,11 @@ function fetchRepositories() {
     loader.style.display = "block";
     pagination.innerHTML = "";
 
-    fetch(`${baseURL}${username}/repos`)
+    fetchUserInformation(username)
+    .then(userInfo => {
+        displayUserInfo(userInfo);
+
+        fetch(`${baseURL}${username}/repos`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -19,10 +36,11 @@ function fetchRepositories() {
         })
         .then(repositories => {
             loader.style.display = "none";
+
             if (Array.isArray(repositories)) {
                 displayRepositories(repositories.slice(0,10));
-                createPagination(repositories.length);
-                console.log(repositories.length)
+                console.log()
+                createPagination(userInfo.public_repos);
             } else {
                 repositoriesContainer.innerHTML = `<p style="color: red;">Error: User not found or no repositories available.</p>`;
             }
@@ -31,6 +49,28 @@ function fetchRepositories() {
             loader.style.display = "none";
             repositoriesContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
         });
+})
+.catch(error => {
+    loader.style.display = "none";
+    repositoriesContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+});
+}
+
+function displayUserInfo(userInfo) {
+    console.log(userInfo)
+    const userContainer = document.getElementById("user");
+    userContainer.innerHTML = `<div class="container d-flex justify-content-center ">
+            <div class="dppart p-2 m-2">
+            <img src="${userInfo.avatar_url}" class="img-thumbnail my-2 border border-info-subtle rounded-circle border-2" alt=""> 
+        </div>
+        <div class="biopart p-2 m-2 align-self-center ">
+            <div class="name my-2"> <h3> ${userInfo.name} </h3> </div>
+            <div class="bio my-2"> ${userInfo.bio} </div>
+            <div class="location my-2"> ${userInfo.location} </div>
+            <div class="twtr my-2"> ${userInfo.twitter_username} </div>
+            <div class="ghlink "> <a class="link-light" href="${userInfo.html_url}">Github Profile</a>  </div>
+        </div>
+    </div>`;
 }
 
 function displayRepositories(repositories) {

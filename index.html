@@ -10,16 +10,24 @@
 </head>
 
 <body data-bs-theme="dark">
-    <div class="container bg-dark text-light w-50 border border-3 rounded border-light-subtle ">
+    <div class="container bg-dark text-light w-60 border border-3 rounded border-light-subtle ">
         <h1>Github Repositories</h1>
-        <div class="search-bar my-4">
-            <div class="input-group flex-nowrap">
-                <input type="text" class="form-control mx-5 border border-2" placeholder="Enter Github Username" id="usernameInput" aria-label="Username" aria-describedby="addon-wrapping">
+        <div class="search-bar my-4 ">
+            <div class="container d-flex justify-content-center">
+            <div class="input-group flex-nowrap w-50 ">
+                <input type="text" class="form-control mx-5  border border-2" placeholder="Enter Github Username" id="usernameInput" aria-label="Username" aria-describedby="addon-wrapping">
               </div>
             <button class="btn btn-outline-info my-4 mx-5" onclick="fetchRepositories()">Fetch Repositories</button>
+        </div>
         </div> 
-        <div id="loader" class="loader"></div>
-            <div id="repositories" class="row row-cols-1 row-cols-md-3 g-4"></div>
+        
+        <div id="user" class="user-container"></div>
+        
+        <div id="loader" class="loader"></div> 
+
+        
+        
+        <div id="repositories" class="row row-cols-1 row-cols-md-4 g-4"></div>
     
         <div id="pagination" class="pagination"></div>
     </div>
