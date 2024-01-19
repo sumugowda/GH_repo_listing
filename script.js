@@ -38,9 +38,9 @@ function fetchRepositories() {
             loader.style.display = "none";
 
             if (Array.isArray(repositories)) {
-                displayRepositories(repositories.slice(0,10));
-                console.log()
+                displayRepositories(repositories.slice(0,10),userInfo.public_repos,1);
                 createPagination(userInfo.public_repos);
+                console.log(repositories)
             } else {
                 repositoriesContainer.innerHTML = `<p style="color: red;">Error: User not found or no repositories available.</p>`;
             }
@@ -54,27 +54,34 @@ function fetchRepositories() {
     loader.style.display = "none";
     repositoriesContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
 });
-}
+} 
 
 function displayUserInfo(userInfo) {
     console.log(userInfo)
     const userContainer = document.getElementById("user");
-    userContainer.innerHTML = `<div class="container d-flex justify-content-center ">
+    userContainer.innerHTML = `<div class="container d-flex justify-content-center shadow w-75">
             <div class="dppart p-2 m-2">
-            <img src="${userInfo.avatar_url}" class="img-thumbnail my-2 border border-info-subtle rounded-circle border-2" alt=""> 
+            <img src="${userInfo.avatar_url}" class="img-thumbnail border border-info-subtle rounded-circle border-2" alt=""> 
         </div>
-        <div class="biopart p-2 m-2 align-self-center ">
-            <div class="name my-2"> <h3> ${userInfo.name} </h3> </div>
-            <div class="bio my-2"> ${userInfo.bio} </div>
-            <div class="location my-2"> ${userInfo.location} </div>
-            <div class="twtr my-2"> ${userInfo.twitter_username} </div>
+        <div class="biopart p-2 align-self-center ">
+            <div class="name "> <h3> ${userInfo.name} </h3> </div>
+            <div class="bio "> ${userInfo.bio} </div>
+            <div class="location "> ${userInfo.location} </div>
+            <div class="twtr "> ${userInfo.twitter_username} </div>
             <div class="ghlink "> <a class="link-light" href="${userInfo.html_url}">Github Profile</a>  </div>
         </div>
     </div>`;
 }
 
-function displayRepositories(repositories) {
+function displayRepositories(repositories,tp,k) {
     const repositoriesContainer = document.getElementById("repositories");
+    const repositorycount = document.createElement("div");
+    repositorycount.className = "container w-100";
+        repositorycount.innerHTML = `
+        <div class="container  d-flex justify-content-end ">
+            <small>Showing repositories ${repositories.length+((k-1)*10)} of ${tp} </small>
+        </div>`;
+        repositoriesContainer.appendChild(repositorycount); 
 
 
     repositories.forEach(repository => {
@@ -83,15 +90,18 @@ function displayRepositories(repositories) {
         const repositoryDiv = document.createElement("div");
         repositoryDiv.className = "col";
         repositoryDiv.innerHTML = `
-        <div class="card text-bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card text-bg-dark mb-3 shadow" style="max-width: 18rem;">
             <div class="card-header">${repository.name}</div> 
             <div class="card-body"> 
                 <p class="card-text">${repository.description}</p> 
             </div>
-        </div>`;
+        </div>`
         repositoriesContainer.appendChild(repositoryDiv); 
 
     });
+    
+
+
 }
 
 function createPagination(totalRepositories) {
@@ -102,20 +112,22 @@ function createPagination(totalRepositories) {
     for (let i = 1; i <= totalPages; i++) {
         const button = document.createElement("button");
         button.innerText = i;
-        button.addEventListener("click", () => fetchPage(i));
+        button.addEventListener("click", () => fetchPage(i,totalRepositories));
         paginationContainer.appendChild(button);
-        console.log(totalPages)
     }
+
 }
 
 
-function fetchPage(pageNumber) {
+
+function fetchPage(pageNumber,j) {
     const username = document.getElementById("usernameInput").value;
     const repositoriesContainer = document.getElementById("repositories");
     const loader = document.getElementById("loader");
 
     repositoriesContainer.innerHTML = "";
     loader.style.display = "block";
+
 
     fetch(`${baseURL}${username}/repos?per_page=10&page=${pageNumber}`)
         .then(response => {
@@ -126,7 +138,7 @@ function fetchPage(pageNumber) {
         })
         .then(repositories => {
             loader.style.display = "none";
-            displayRepositories(repositories);
+            displayRepositories(repositories,j,pageNumber);
         })
         .catch(error => {
             loader.style.display = "none";
