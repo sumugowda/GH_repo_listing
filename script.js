@@ -9,7 +9,7 @@ function fetchUserInformation(username) {
             return response.json();
         })
         .catch(error => {
-            throw new Error(`Not found please check the username and try again`);
+            throw new Error(`Not found please the username and try again`);
         });
 }
 
@@ -56,6 +56,7 @@ function fetchRepositories() {
 } 
 
 function displayUserInfo(userInfo) {
+    console.log(userInfo)
     const userContainer = document.getElementById("user");
     userContainer.innerHTML = `<div class="container d-flex justify-content-center shadow w-75">
             <div class="dppart p-2 m-2">
@@ -63,8 +64,6 @@ function displayUserInfo(userInfo) {
         </div>
         <div class="biopart p-2 align-self-center ">
             <div class="name "> <h3> ${userInfo.name} </h3> </div>
-            <div class="conatiner my-2"><i class="fa-solid fa-users"></i> ${userInfo.followers} Followers ${userInfo.following} Following </div>
-
             <div class="bio "> <i class="fa-solid fa-address-card"></i> ${userInfo.bio} </div>
             <div class="location "><i class="fa-solid fa-location-dot"></i> ${userInfo.location} </div>
             <div class="twtr "><i class="fa-brands fa-twitter"></i>  ${userInfo.twitter_username} </div>
@@ -99,6 +98,7 @@ function displayRepositories(repositories, tp, k) {
                 </div>
         </div>`;
         repositoriesContainer.appendChild(repositoryDiv);
+        console.log(repository)
 
         fetchLanguages(repository.name,repository.owner.login);
     });
@@ -115,6 +115,7 @@ function fetchLanguages(repoName,username) {
             return response.json();
         })
         .then(languages => {
+            // Display each language as a separate tag
             Object.keys(languages).forEach(language => {
                 const languageTag = document.createElement("span");
                 languageTag.className = "badge bg-primary  me-2";
